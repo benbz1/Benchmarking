@@ -1,0 +1,30 @@
+version: '3'
+services:
+  timescaledb:
+    image: timescale/timescaledb:2.7.2-pg13
+    container_name: timescaledb
+    environment:
+      - POSTGRES_PASSWORD=password
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./data/cpu_usage.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./data/cpu_usage.csv:/app/cpu_usage.csv  
+      
+  app:
+    build: .
+    container_name: go_app
+    depends_on:
+      - timescaledb
+    environment:
+      - DB_HOST=timescaledb
+      - DB_USER=postgres
+      - DB_PASSWORD=password
+      - DB_NAME=homework
+      - WORKERS=${WORKERS}
+    volumes:
+      - ./data/query_params.csv:/app/query_params.csv
+    ports:
+      - "8080:8080"
+    command: >
+      ./main -file=/app/query_params.csv -workers=${WORKERS:-3}
