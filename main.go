@@ -99,7 +99,7 @@ func (w *Worker) start() {
 		}
 
 		duration := time.Since(start)
-				// TODO (Ben - 10/08/2024): Consider maintaining a more advanced data structure to track query results for deeper analysis by host, date, etc.
+		// TODO (Ben - 10/08/2024): Consider maintaining a more advanced data structure to track query results for deeper analysis by host, date, etc.
 		w.times = append(w.times, duration)
 		w.wg.Done()
 	}
