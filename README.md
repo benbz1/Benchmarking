@@ -75,6 +75,3 @@ This tool benchmarks SELECT query performance across multiple workers, retrievin
 - **Number of Workers**: You can adjust the number of workers by setting the `WORKERS` environment variable when running the application via Docker.
 
 - **Queries**: You can replace the input with different queries in [`./data/query_params.csv`](./data/query_params.csv).
-
-
-## Comments & Next Steps
