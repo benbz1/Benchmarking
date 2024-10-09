@@ -81,6 +81,7 @@ func (w *Worker) start() {
 		// TODO (Ben - 10/08/2024): Consider implementing caching to avoid re-processing the same queries.
 		rows, err := w.db.Query(context.Background(), sqlQuery)
 		if err != nil {
+			// TODO (Ben - 10/08/2024): Improve error handling and logging. Consider using tools like logrus for better log management and structured logging.
 			fmt.Fprintf(os.Stderr, "Worker %d failed to execute query: %v\n", w.id, err)
 			w.wg.Done()
 			continue
@@ -200,6 +201,7 @@ func main() {
 		}
 
 		// Handle malformed or incomplete records
+		// TODO (Ben - 10/08/2024): Handle invalid query input errors. For now, log errors and continue processing other queries.
 		if len(record) < 3 || strings.TrimSpace(record[0]) == "" || strings.TrimSpace(record[1]) == "" || strings.TrimSpace(record[2]) == "" {
 			log.Printf("Skipping invalid record: %v", record)
 			continue
