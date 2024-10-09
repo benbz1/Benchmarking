@@ -46,11 +46,17 @@ This tool benchmarks SELECT query performance across multiple workers, retrievin
 
 ## How to Run Locally (Without Docker)
 
-1. Ensure TimescaleDB is running locally and the `cpu_usage` table is populated.
+1. Install all dependencies using:
 
-2. Comment out lines (37-41) and replace `connStr` with your connection string.
+   ```bash
+   go mod tidy
+   ```
 
-3. Run the application using Go:
+2. Ensure TimescaleDB is running locally and the `cpu_usage` table is populated.
+
+3. Comment out lines (37-41) and replace `connStr` with your connection string.
+
+4. Run the application using Go:
 
    Using a file:
    ```bash
@@ -64,6 +70,11 @@ This tool benchmarks SELECT query performance across multiple workers, retrievin
 
 ## Configuration
 
+- **Data**: You can replace the table data in [`./data/cpu_usage.csv`](./data/cpu_usage.csv).
+
 - **Number of Workers**: You can adjust the number of workers by setting the `WORKERS` environment variable when running the application via Docker.
 
-- **Queries**: You can replace the input with different queries under the [`./data/query_params.csv`](./data/query_params.csv) directory.
+- **Queries**: You can replace the input with different queries in [`./data/query_params.csv`](./data/query_params.csv).
+
+
+## Comments & Next Steps
