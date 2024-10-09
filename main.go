@@ -42,8 +42,10 @@ func connectToDatabase() (*pgx.Conn, error) {
 
 	connStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable", dbUser, dbPassword, dbHost, dbPort, dbName)
 
+	// TODO (Ben - 10/08/2024): Improve error handling for database connection failures
 	var dbConn *pgx.Conn
 	var err error
+	// TODO (Ben - 10/08/2024): Implement database connection pooling to handle more queries efficiently.
 	for i := 0; i < 3; i++ {
 		dbConn, err = pgx.Connect(context.Background(), connStr)
 		if err == nil {
@@ -75,7 +77,8 @@ func (w *Worker) start() {
 		`, query.hostname, query.startTime, query.endTime)
 
 		// Execute SQL query
-		// TODO (Ben - 10/08/2024): Add a query time limit.
+		// TODO (Ben - 10/08/2024): Add query timeout mechanism to prevent long-running queries. 
+		// TODO (Ben - 10/08/2024): Consider implementing caching to avoid re-processing the same queries.
 		rows, err := w.db.Query(context.Background(), sqlQuery)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Worker %d failed to execute query: %v\n", w.id, err)
@@ -96,6 +99,7 @@ func (w *Worker) start() {
 		}
 
 		duration := time.Since(start)
+				// TODO (Ben - 10/08/2024): Consider maintaining a more advanced data structure to track query results for deeper analysis by host, date, etc.
 		w.times = append(w.times, duration)
 		w.wg.Done()
 	}
@@ -144,12 +148,13 @@ func main() {
 	var inputFile string
 	var numWorkers int
 	flag.StringVar(&inputFile, "file", "", "Path to the input CSV file. Leave blank to use STDIN.")
+	// TODO (Ben - 10/08/2024): Consider setting a maximum number of workers, passed in by user input, to control concurrency and optimize resource usage.
 	flag.IntVar(&numWorkers, "workers", 3, "Number of concurrent workers.")
 	flag.Parse()
 
-	// TODO (Ben - 10/08/2024): Add validation to ensure a file is provided and exists, or that valid input is supplied via STDIN.
 	var reader *csv.Reader
 	if inputFile != "" {
+		// TODO (Ben - 10/08/2024): Add better validation for CSV input data
 		file, err := os.Open(inputFile)
 		if err != nil {
 			log.Fatalf("failed to open file: %v", err)
@@ -158,6 +163,7 @@ func main() {
 		reader = csv.NewReader(file)
 	} else {
 		// STDIN
+		// TODO (Ben - 10/08/2024): Add better validation for STDIN input data
 		reader = csv.NewReader(os.Stdin)
 	}
 
@@ -173,7 +179,7 @@ func main() {
 		}
 		worker := &Worker{
 			id:      i,
-			queries: make(chan Query, 10),
+			queries: make(chan Query, 10), // TODO (Ben - 10/08/2024): Revisit the channel buffer size. Consider removing/adjusting based on query load and worker processing time to avoid unnecessary blocking.
 			wg:      &wg,
 			times:   make([]time.Duration, 0),
 			db:      dbConn,
