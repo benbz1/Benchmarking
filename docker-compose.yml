@@ -9,8 +9,8 @@ services:
       - "5433:5432"
     volumes:
       - ./data/cpu_usage.sql:/docker-entrypoint-initdb.d/init.sql
-      - ./data/cpu_usage.csv:/app/cpu_usage.csv  
-      
+      - ./data/cpu_usage.csv:/app/cpu_usage.csv
+
   app:
     build: .
     container_name: go_app

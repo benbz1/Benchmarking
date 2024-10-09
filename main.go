@@ -157,6 +157,7 @@ func main() {
 		defer file.Close()
 		reader = csv.NewReader(file)
 	} else {
+		// STDIN
 		reader = csv.NewReader(os.Stdin)
 	}
 
